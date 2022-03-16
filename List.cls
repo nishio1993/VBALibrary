@@ -23,7 +23,7 @@ End Sub
 
 Public Sub Init(Capacity As Integer)
     Me.Capacity = Capacity
-    ReDim Preserve Data(Me.Capacity)
+    ReDim Preserve Data(Me.Capacity - 1)
 End Sub
 
 Public Sub Add(value As Variant)
@@ -70,19 +70,15 @@ End Sub
 Public Sub RemoveAt(index As Integer)
     Data(index) = Empty
     For i = index To Capacity - 2
-        If IsObject(Data(i + 1)) Then
-            Set Data(i) = Data(i + 1)
-        Else
-            Data(i) = Data(i + 1)
-        End If
+        Call Allocate(i, Data(i + 1))
         If IsEmpty(Data(i + 1)) Then
             Exit For
         End If
     Next i
 End Sub
 
-Public Function IndexOf(index As Integer) As Variant
-    IndexOf = Data(index)
+Public Function Item(index As Integer) As Variant
+    Item = Data(index)
 End Function
 
 Public Function Contains(value As Variant) As Boolean
