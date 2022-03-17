@@ -32,14 +32,14 @@ Public Sub Add(value As Variant)
         Capacity = Capacity * 2
         ReDim Preserve Data(Capacity - 1)
     End If
-    Call Allocate(Count - 1, value)
+    Call assignAt(Count - 1, value)
 End Sub
 
 Public Sub InsertAt(index As Integer, value As Variant)
     Dim i As Integer
     For i = Count To index Step -1
         If i = index Then
-            Call Allocate(i, value)
+            Call assignAt(i, value)
         Else
             Data(i) = Data(i - 1)
         End If
@@ -47,22 +47,15 @@ Public Sub InsertAt(index As Integer, value As Variant)
 End Sub
 
 Public Sub UpdateAt(index As Integer, value As Variant)
-    Call Allocate(index, value)
+    Call assignAt(index, value)
 End Sub
 
 Public Sub Remove(value As Variant)
     Dim i As Integer
     For i = 0 To Count - 1
-        If IsObject(value) Then
-            If Data(i) Is value Then
-                Call RemoveAt(i)
-                Exit For
-            End If
-        Else
-            If Data(i) = value Then
-                Call RemoveAt(i)
-                Exit For
-            End If
+        If isEquals(Data(i), value) Then
+            Call RemoveAt(i)
+            Exit For
         End If
     Next i
 End Sub
@@ -70,7 +63,7 @@ End Sub
 Public Sub RemoveAt(index As Integer)
     Data(index) = Empty
     For i = index To Capacity - 2
-        Call Allocate(i, Data(i + 1))
+        Call assignAt(i, Data(i + 1))
         If IsEmpty(Data(i + 1)) Then
             Exit For
         End If
@@ -85,16 +78,9 @@ Public Function Contains(value As Variant) As Boolean
     Contains = False
     For i = 0 To Count - 1
         If IsEmpty(Data(i)) = False Then
-            If IsObject(value) Then
-                If Data(i) Is value Then
-                    Contains = True
-                    Exit For
-                End If
-            Else
-                If Data(i) = value Then
-                    Contains = True
-                    Exit For
-                End If
+            If isEquals(Data(i), value) Then
+                Contains = True
+                Exit For
             End If
         End If
     Next i
@@ -104,10 +90,26 @@ Public Sub Sort(isAsc As Boolean)
 
 End Sub
 
-Private Sub Allocate(index As Integer, value As Variant)
+Private Sub assignAt(index As Integer, value As Variant)
     If IsObject(value) Then
         Set Data(index) = value
     Else
         Data(index) = value
     End If
 End Sub
+
+Private Function isEquals(value1 As Variant, value2 As Variant) As Boolean
+    If IsObject(value1) And IsObject(value2) Then
+        If value1 Is value2 Then
+            isEquals = True
+        Else
+            isEquals = False
+        End If
+    Else
+        If value1 = value2 Then
+            isEquals = True
+        Else
+            isEquals = False
+        End If
+    End If
+End Function
