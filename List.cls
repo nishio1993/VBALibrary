@@ -7,6 +7,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+
 Private Capacity As Integer
 Private Data() As Variant
 Public Count As Integer
@@ -88,6 +89,36 @@ End Function
 
 Public Sub Sort(isAsc As Boolean)
 
+End Sub
+
+Public Function ToArray() As Variant()
+    Dim arr() As Variant
+    ReDim arr(Count - 1)
+    For i = 0 To Count - 1
+        arr(i) = Data(i)
+    Next i
+    ToArray = arr
+End Function
+
+Public Sub Reverse()
+    Dim last As Long
+    Dim tmp As Variant
+    last = Count / 2
+    For i = 0 To last
+        If i = last Then
+            Exit For
+        End If
+        If IsObject(Data(i)) Then
+            Set tmp = Data(i)
+            Set Data(i) = Data(Count - 1 - i)
+            Set Data(Count - 1 - i) = tmp
+            
+        Else
+            tmp = Data(i)
+            Data(i) = Data(Count - 1 - i)
+            Data(Count - 1 - i) = tmp
+        End If
+    Next i
 End Sub
 
 Private Sub assignAt(index As Integer, value As Variant)
