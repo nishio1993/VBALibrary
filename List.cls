@@ -8,9 +8,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 
-Private Capacity As Integer
+Private Capacity As Long
 Private Data() As Variant
-Public Count As Integer
+Public Count As Long
 
 Private Sub Class_Initialize()
     Capacity = 4
@@ -22,7 +22,7 @@ Private Sub Class_Terminate()
 
 End Sub
 
-Public Sub Init(Capacity As Integer)
+Public Sub Init(Capacity As Long)
     Me.Capacity = Capacity
     ReDim Preserve Data(Me.Capacity - 1)
 End Sub
@@ -36,8 +36,8 @@ Public Sub Add(value As Variant)
     Call assignAt(Count - 1, value)
 End Sub
 
-Public Sub InsertAt(index As Integer, value As Variant)
-    Dim i As Integer
+Public Sub InsertAt(index As Long, value As Variant)
+    Dim i As Long
     For i = Count To index Step -1
         If i = index Then
             Call assignAt(i, value)
@@ -47,12 +47,12 @@ Public Sub InsertAt(index As Integer, value As Variant)
     Next i
 End Sub
 
-Public Sub UpdateAt(index As Integer, value As Variant)
+Public Sub UpdateAt(index As Long, value As Variant)
     Call assignAt(index, value)
 End Sub
 
 Public Sub Remove(value As Variant)
-    Dim i As Integer
+    Dim i As Long
     For i = 0 To Count - 1
         If isEquals(Data(i), value) Then
             Call RemoveAt(i)
@@ -61,7 +61,7 @@ Public Sub Remove(value As Variant)
     Next i
 End Sub
 
-Public Sub RemoveAt(index As Integer)
+Public Sub RemoveAt(index As Long)
     Data(index) = Empty
     For i = index To Capacity - 2
         Call assignAt(i, Data(i + 1))
@@ -71,7 +71,7 @@ Public Sub RemoveAt(index As Integer)
     Next i
 End Sub
 
-Public Function Item(index As Integer) As Variant
+Public Function Item(index As Long) As Variant
     Item = Data(index)
 End Function
 
@@ -121,7 +121,16 @@ Public Sub Reverse()
     Next i
 End Sub
 
-Private Sub assignAt(index As Integer, value As Variant)
+Public Function DeepCopy() As List
+    Dim newList as New List
+    newList.Init(Capacity)
+    For i = 0 To Count - 1
+        newList.Add Data(i)
+    Next i
+    Set DeepCopy = newList
+End Function
+
+Private Sub assignAt(index As Long, value As Variant)
     If IsObject(value) Then
         Set Data(index) = value
     Else
